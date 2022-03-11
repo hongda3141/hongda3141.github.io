@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hongda.github.io</title>
+    <style>
+        .flex {
+            display: flex
+        }
+
+        .label {
+            font-weight: bold;
+            margin-right: 13px;
+        }
+
+        .game-content {
+            margin-bottom: 20px;
+        }
+
+        .content-wrapper {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm bg-light" >
+        <div class="container-fluid"">
+        <!-- <div class="container-fluid" onclick="window.open('https://github.com/hongda3141','_self')"> -->
+            <span class="navbar-text" onclick="window.open('https://github.com/hongda3141','_self')"
+            ><u>BackToProfile</u></span>
+        </div>
+    </nav>
+    <div class="container-fluid mt-3">
+        <h5>Account: <span class="showAccount" id="accountsSpan"></span></h5>
+        <h5>Network: <span class="showAccount" id="networkSpan"></span></h5>
+        <h5>ChainId: <span class="showAccount" id="chainIdSpan"></span></h5>
+    </div>
+    <div class="content-wrapper">
+        <div class="game-content">
+            <div class="flex">
+                <div class="label">
+                    Status:
+                </div>
+                <div id="game-status">
+                    None
+                </div>
+            </div>
+            <div class="flex">
+                <button id="game-control-btn">
+                    START
+                    <!-- 开始游戏 -->
+                </button>
+            </div>
+        </div>
+        <canvas id="snake-world"></canvas>
+    </div>
+    <script src="./bootstrap.js"></script>
+</body>
+<script>
+    //  --- here
+    // 初始化方法,页面渲染完成后执行
+     const initaillize = () => {
+         const isMetaMaskIntalled = ()=> {
+             const { ethereum } = window;
+             if(typeof ethereum === 'undefined') {
+                 return false;
+             }
+             return Boolean(ethereum && ethereum.isMetaMask)
+         }
+
+         const getAccount = async () => {
+             try {
+                 const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+                 accountsSpan.innerHTML = accounts;
+             } catch (error) {
+                 console.error(error);
+             }
+         }
+
+         const getNetworkAndChainId = async ()=>{
+             try {
+                 const ChainId = await ethereum.request({method: 'eth_chainId'});
+                 chainIdSpan.innerHTML = ChainId;
+                 const networkId = await ethereum.request({method: 'net_version'})
+                 networkSpan.innerHTML = networkId;
+             } catch (error) {
+                console.error(error);
+             }
+         }
+
+         const checkMetaMaskClient = async ()=>{
+             // 判断是否安装
+             if(!isMetaMaskIntalled()){
+                 alert('please install metamask');
+             }else{
+                getNetworkAndChainId();
+                getAccount();
+                // alert('get the info ');
+                // 获取后显示到上面21行 位置
+             }
+         }
+         checkMetaMaskClient();
+     }
+    //  DOMContentLoaded 拼写错误导致报错.
+     window.addEventListener('DOMContentLoaded',initaillize);
+</script>
+</html>
